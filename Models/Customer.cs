@@ -10,6 +10,8 @@ namespace TrashCollecter
 {
     public class Customer
     {
+         
+  
         [Key]
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -19,6 +21,18 @@ namespace TrashCollecter
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
+        
+        public string RequestedDayEachWeek { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime RequestOneTimePickUpDate { get; set; }
+        
+        [DataType(DataType.Date)]
+        public DateTime StartSuspensionDate { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime StopSuspensionDate { get; set; }
+       
+        
+
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

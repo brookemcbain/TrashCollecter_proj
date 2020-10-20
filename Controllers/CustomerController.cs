@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,15 +19,16 @@ namespace TrashCollecter.Controllers
         }
         public ActionResult Index()
         {
-            var customer = _db.Customers.ToList(); 
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = _db.Customers.Where(m => m.IdentityUserId == userId).SingleOrDefault();
 
             return View(customer);
         }
 
         // GET: Customer/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details()
         {
-            return View(id);
+            return View();
         }
 
         // GET: Customer/Create
@@ -46,9 +48,11 @@ namespace TrashCollecter.Controllers
         {
             try
             {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                customer.IdentityUserId = userId; 
                 _db.Customers.Add(customer);
                 _db.SaveChanges(); 
-                return RedirectToAction(nameof(Details));
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -83,7 +87,8 @@ namespace TrashCollecter.Controllers
         // GET: Customer/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Customer deleteCustomer = _db.Customers.Find(id); 
+            return View(deleteCustomer);
         }
 
         // POST: Customer/Delete/5
@@ -93,6 +98,9 @@ namespace TrashCollecter.Controllers
         {
             try
             {
+                Customer deleteCustomer = _db.Customers.Find(id);
+                _db.Customers.Remove(deleteCustomer);
+                _db.SaveChanges(); 
                 return RedirectToAction(nameof(Index));
             }
             catch
