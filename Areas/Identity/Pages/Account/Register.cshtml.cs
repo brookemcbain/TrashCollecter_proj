@@ -87,26 +87,24 @@ namespace TrashCollecter.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email }; //creates new Identity User object
+                var result = await _userManager.CreateAsync(user, Input.Password); //creates your registered user (AspNetUser)
                 if (result.Succeeded)
                 {
                     if(await _roleManager.RoleExistsAsync(Input.Role))
                     {
-                        await _userManager.AddToRoleAsync(user, Input.Role);
+                        await _userManager.AddToRoleAsync(user, Input.Role); //add your registered user and role (from dropdown) to AspNetUserRoles table
                     }
                     _logger.LogInformation("User created a new account with password.");
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    await _signInManager.SignInAsync(user, isPersistent: false); //sign in the user immediately
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    //redirect to customer create profile if role is customer
+                    if (Input.Role == "Customer")
+                    {
+                        return RedirectToAction("Create", "Customer", null); 
+                    }
+
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

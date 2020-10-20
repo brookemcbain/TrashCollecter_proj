@@ -16,7 +16,7 @@ namespace TrashCollecter.ActionFilters
         {
             _claimsPrincipal = claimsPrincipal;
         }
-        public void OnActionExecuting(ActionExecutedContext context)
+        public void OnActionExecuting(ActionExecutingContext context)
         {
              
             var controller = context.RouteData.Values["controller"];
@@ -37,9 +37,6 @@ namespace TrashCollecter.ActionFilters
 
         }
 
-        public void OnActionExecuting(ActionExecutingContext context)
-        {
-            
-        }
+        
     }
 }

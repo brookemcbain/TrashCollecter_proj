@@ -5,19 +5,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TrashCollecter.ActionFilters;
 using TrashCollecter.Models;
 
 namespace TrashCollecter.Controllers
 {
+    //[ServiceFilter(typeof(GlobalRouting))]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
+       
+       
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
-
+        //[ServiceFilter(typeof(GlobalRouting))]
         public IActionResult Index()
         {
             return View();
