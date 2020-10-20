@@ -26,13 +26,17 @@ namespace TrashCollecter.Controllers
         // GET: Customer/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            return View(id);
         }
 
         // GET: Customer/Create
+
         public ActionResult Create()
         {
-            return View();
+            
+            return View(); 
+           
+        
         }
 
         // POST: Customer/Create
@@ -44,7 +48,7 @@ namespace TrashCollecter.Controllers
             {
                 _db.Customers.Add(customer);
                 _db.SaveChanges(); 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details));
             }
             catch
             {
@@ -85,7 +89,7 @@ namespace TrashCollecter.Controllers
         // POST: Customer/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Customer customer)
         {
             try
             {

@@ -103,8 +103,12 @@ namespace TrashCollecter.Areas.Identity.Pages.Account
                     if (Input.Role == "Customer")
                     {
                         return RedirectToAction("Create", "Customer", null); 
+                       
                     }
-
+                    else if (Input.Role == "Employee")
+                    {
+                        return RedirectToAction("Create", "Employee", null); 
+                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
