@@ -105,9 +105,9 @@ namespace TrashCollecter.Areas.Identity.Pages.Account
                         return RedirectToAction("Create", "Customer", null); 
                        
                     }
-                    else if (Input.Role == "Employee")
+                    else if (Input.Role == "Employees")
                     {
-                        return RedirectToAction("Create", "Employee", null); 
+                        return RedirectToAction("Create", "Employees", null); 
                     }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)

@@ -23,6 +23,7 @@ namespace TrashCollecter
         public string ZipCode { get; set; }
         
         public string RequestedDayEachWeek { get; set; }
+        
         [DataType(DataType.Date)]
         public DateTime RequestOneTimePickUpDate { get; set; }
         
@@ -31,8 +32,6 @@ namespace TrashCollecter
         [DataType(DataType.Date)]
         public DateTime StopSuspensionDate { get; set; }
        
-        
-
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

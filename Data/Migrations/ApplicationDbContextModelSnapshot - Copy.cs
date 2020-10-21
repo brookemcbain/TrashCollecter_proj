@@ -48,15 +48,15 @@ namespace TrashCollecter.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "92955371-7972-4ff4-9b15-00e7159fbf25",
-                            ConcurrencyStamp = "dd48ba80-ea07-4f35-8303-adfcb33fd43e",
+                            Id = "d76e0b1f-626f-40aa-bb13-fe6d1e178c39",
+                            ConcurrencyStamp = "28e8f595-52ce-4988-835c-da998618a4b8",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "6d3a5b45-eca2-4124-beff-ea87197c22a1",
-                            ConcurrencyStamp = "e20c69ba-6702-491c-9b48-bd4edb9b5daf",
+                            Id = "f769cd9a-23cf-4cb8-82f4-37da89a3ee00",
+                            ConcurrencyStamp = "3d5127bd-c851-403d-973e-c106d5925469",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -241,9 +241,6 @@ namespace TrashCollecter.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("AmountOwed")
-                        .HasColumnType("float");
-
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
@@ -282,6 +279,44 @@ namespace TrashCollecter.Migrations
                     b.HasIndex("IdentityUserId");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("TrashCollecter.Models.Employee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityUserId");
+
+                    b.ToTable("Employee");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -336,6 +371,13 @@ namespace TrashCollecter.Migrations
                 });
 
             modelBuilder.Entity("TrashCollecter.Customer", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId");
+                });
+
+            modelBuilder.Entity("TrashCollecter.Models.Employee", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
