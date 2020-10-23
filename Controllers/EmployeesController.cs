@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,20 +20,47 @@ namespace TrashCollecter.Controllers
         {
             _context = context;
         }
-
+      /// <summary>
+      /// </summary>
+      /// <returns></returns>
         // GET: Employees
+        
+        
         public async Task<IActionResult> Index()
         {
+            EmployeeIndexViewModel employeeView = new EmployeeIndexViewModel(); 
+            
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var CurrentEmployee = _context.Employees.Where(w => w.IdentityUserId == userId).Single(); 
+            
+            var CurrentEmployee = _context.Employees.Where(w => w.IdentityUserId == userId).SingleOrDefault(); 
+       
             if(CurrentEmployee == null)
             {
                 return RedirectToAction("Create"); 
             }
+            ViewData["RequestedDayOfWeek"] = new SelectList(_context.Users, "Id", "RequestedDayOfWeek");  
+
             string dayOfWeek = DateTime.Today.DayOfWeek.ToString();
-            var applicationDbContext = await _context.Customers.Where((a => a.ZipCode == CurrentEmployee.ZipCode && a.RequestedDayEachWeek == dayOfWeek)).ToListAsync(); 
-            return View(await _context.Employees.ToListAsync());
+            employeeView.Customers = await _context.Customers.Where((a => a.ZipCode == CurrentEmployee.ZipCode && a.RequestedDayEachWeek == dayOfWeek)).ToListAsync(); 
+            return View(employeeView);
+
+            
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Index(EmployeeIndexViewModel employeeIndexViewModel)
+        {
+            EmployeeIndexViewModel employeeView = new EmployeeIndexViewModel();
+
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var CurrentEmployee = _context.Employees.Where(w => w.IdentityUserId == userId).SingleOrDefault();
+
+            employeeView.Customers = _context.Customers.Where((a => a.ZipCode == CurrentEmployee.ZipCode && a.RequestedDayEachWeek == employeeIndexViewModel.RequestedFilterDay)).ToList(); 
+
+            return View(employeeView); 
+        }
+           
 
         // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -63,14 +91,17 @@ namespace TrashCollecter.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode")] Employee employee)
+        public async Task<IActionResult> Create(Employee employee)
         {
             if (ModelState.IsValid)
             {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                employee.IdentityUserId = userId;
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            } 
+            
             return View(employee);
         }
 

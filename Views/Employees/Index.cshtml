@@ -1,8 +1,12 @@
-﻿@model IEnumerable<TrashCollecter.Models.Employee>
+﻿@model TrashCollecter.Models.EmployeeIndexViewModel
+
+
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "DropDownList"; 
+    
 }
 
 <h1>Index</h1>
@@ -10,63 +14,119 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.State)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ZipCode)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.State)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ZipCode)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+@*<div class ="form-group">
+    <label asp-for="RequestedDayEachWeek" class ="control-label">
+    <select asp-for-"RequestedDayEachWeek" class="form-control" asp-items="ViewBag.RequestedDayEachWeek"></select>
+</div>*@
+<form asp-action="Index">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <select asp-for="RequestedFilterDay" class="form-control">
+            <option value="">Choose Day Of Week</option>
+            <option selected="selected" value="0">Sunday</option>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+        </select>
+    </div>
+    <button type="submit">Submit</button>
+    </form>
+
+    <table class="table">
+        <thead>
+
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].City)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].State)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].ZipCode)
+                </th>
+                <th>
+
+                    @Html.DisplayNameFor(model => model.Customers[0].RequestedDayEachWeek)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].RequestOneTimePickUpDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].StartSuspensionDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].StopSuspensionDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Customers[0].IdentityUser)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Customers)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.State)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ZipCode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequestedDayEachWeek)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequestOneTimePickUpDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartSuspensionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StopSuspensionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdentityUser.Id)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

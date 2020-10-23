@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace TrashCollecter
+namespace TrashCollecter.Models
 {
     public class Customer
     {
-         
-  
+
+
         [Key]
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -21,8 +24,9 @@ namespace TrashCollecter
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
-        
+
         public string RequestedDayEachWeek { get; set; }
+       
         
         [DataType(DataType.Date)]
         public DateTime RequestOneTimePickUpDate { get; set; }
@@ -37,4 +41,5 @@ namespace TrashCollecter
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
     }
+  
 }
