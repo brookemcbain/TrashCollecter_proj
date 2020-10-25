@@ -35,6 +35,8 @@ namespace TrashCollecter.Models
         public DateTime StartSuspensionDate { get; set; }
         [DataType(DataType.Date)]
         public DateTime StopSuspensionDate { get; set; }
+
+        public int AmountOwed { get; set; }
        
 
         [ForeignKey("IdentityUser")]

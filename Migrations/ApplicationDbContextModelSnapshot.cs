@@ -48,15 +48,15 @@ namespace TrashCollecter.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d76e0b1f-626f-40aa-bb13-fe6d1e178c39",
-                            ConcurrencyStamp = "28e8f595-52ce-4988-835c-da998618a4b8",
+                            Id = "c39c294a-8433-4c50-8728-686cd85d2205",
+                            ConcurrencyStamp = "f1c2053a-e878-422d-b99c-4508db1c4696",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "f769cd9a-23cf-4cb8-82f4-37da89a3ee00",
-                            ConcurrencyStamp = "3d5127bd-c851-403d-973e-c106d5925469",
+                            Id = "a9953b3b-0317-4ae9-88ff-31a40bd3e793",
+                            ConcurrencyStamp = "eb81981a-9136-4f48-99fa-a81eca5bf24c",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -231,7 +231,7 @@ namespace TrashCollecter.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("TrashCollecter.Customer", b =>
+            modelBuilder.Entity("TrashCollecter.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,6 +240,9 @@ namespace TrashCollecter.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AmountOwed")
+                        .HasColumnType("int");
 
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
@@ -316,7 +319,7 @@ namespace TrashCollecter.Migrations
 
                     b.HasIndex("IdentityUserId");
 
-                    b.ToTable("Employee");
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -370,7 +373,7 @@ namespace TrashCollecter.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TrashCollecter.Customer", b =>
+            modelBuilder.Entity("TrashCollecter.Models.Customer", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()

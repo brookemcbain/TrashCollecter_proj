@@ -77,7 +77,7 @@ namespace TrashCollecter.Controllers
         {
             try
             {
-                _db.Customers.Add(customer);
+                _db.Customers.Update(customer);
                 _db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
@@ -87,6 +87,34 @@ namespace TrashCollecter.Controllers
             }
         }
 
+
+        // POST: Customer/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddFee(int id, int? fee)
+        {
+            try
+            {
+                int custFee = 0;
+                if(fee.HasValue)
+                {
+                    custFee = fee.Value;
+                }
+                else
+                {
+                    custFee = 20;
+                }
+                var customer = _db.Customers.Where(w => w.Id == id).SingleOrDefault();
+                customer.AmountOwed += custFee;
+                _db.Customers.Update(customer);
+                _db.SaveChanges();
+                return RedirectToAction(nameof(Index), "Employees");
+            }
+            catch
+            {
+                return View();
+            }
+        }
         // GET: Customer/Delete/5
         public ActionResult Delete(int id)
         {

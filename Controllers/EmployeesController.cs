@@ -14,41 +14,17 @@ namespace TrashCollecter.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;  
 
         public EmployeesController(ApplicationDbContext context)
         {
             _context = context;
         }
-      /// <summary>
-      /// </summary>
-      /// <returns></returns>
-        // GET: Employees
-        
-        
-        public async Task<IActionResult> Index()
-        {
-            EmployeeIndexViewModel employeeView = new EmployeeIndexViewModel(); 
-            
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            var CurrentEmployee = _context.Employees.Where(w => w.IdentityUserId == userId).SingleOrDefault(); 
        
-            if(CurrentEmployee == null)
-            {
-                return RedirectToAction("Create"); 
-            }
-            ViewData["RequestedDayOfWeek"] = new SelectList(_context.Users, "Id", "RequestedDayOfWeek");  
+        // GET: Employees
 
-            string dayOfWeek = DateTime.Today.DayOfWeek.ToString();
-            employeeView.Customers = await _context.Customers.Where((a => a.ZipCode == CurrentEmployee.ZipCode && a.RequestedDayEachWeek == dayOfWeek)).ToListAsync(); 
-            return View(employeeView);
 
-            
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Index(EmployeeIndexViewModel employeeIndexViewModel)
+        public async Task<IActionResult> Index()
         {
             EmployeeIndexViewModel employeeView = new EmployeeIndexViewModel();
 
@@ -56,13 +32,44 @@ namespace TrashCollecter.Controllers
 
             var CurrentEmployee = _context.Employees.Where(w => w.IdentityUserId == userId).SingleOrDefault();
 
-            employeeView.Customers = _context.Customers.Where((a => a.ZipCode == CurrentEmployee.ZipCode && a.RequestedDayEachWeek == employeeIndexViewModel.RequestedFilterDay)).ToList(); 
+            if (CurrentEmployee == null)
+            {
+                return RedirectToAction("Create");
+            }
+            ViewData["RequestedDayOfWeek"] = new SelectList(_context.Users, "Id", "RequestedDayOfWeek");
 
-            return View(employeeView); 
+            // we want to include people who have a one time pickup for todays date and are in the employees zipcode
+            // want to NOT include people who are within their selected suspension dates
+            string dayOfWeek = DateTime.Today.DayOfWeek.ToString();
+             
+            employeeView.Customers = await _context.Customers.Where(a => a.ZipCode == CurrentEmployee.ZipCode && a.RequestedDayEachWeek == dayOfWeek).ToListAsync();
+            return View(employeeView);
+
+
         }
-           
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Index(EmployeeIndexViewModel employeeIndexViewModel)
+        {
+        
+
+            EmployeeIndexViewModel employeeView = new EmployeeIndexViewModel();
+
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var CurrentEmployee = _context.Employees.Where(w => w.IdentityUserId == userId).SingleOrDefault();
+
+            // we want to include people who have a one time pickup for todays date and are in the employees zipcode
+            // want to NOT include people who are within their selected suspension dates
+            employeeView.Customers = _context.Customers.Where(a => a.ZipCode == CurrentEmployee.ZipCode && a.RequestedDayEachWeek == employeeIndexViewModel.RequestedFilterDay).ToList();
+          
+
+            return View(employeeView);
+        }
+
 
         // GET: Employees/Details/5
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -100,25 +107,32 @@ namespace TrashCollecter.Controllers
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            } 
-            
+            }
+
             return View(employee);
         }
-
+        // WHEN AN EMPLOYEE HITS SUBMIT THEN A CHARGE IS APPLIED TO CUSTOMER 
+        // Employee needs a 'charge' button 
+        // Customer needs a $20 charge added to their account 
+        
         // GET: Employees/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(bool? AmountOwed)
         {
-            if (id == null)
+            if (AmountOwed == true)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Edit)); 
             }
-
-            var employee = await _context.Employees.FindAsync(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var insertValue = _context.Customers.Where(w => w.IdentityUserId == userId); 
+            
+            var employee = await _context.Employees.FindAsync(AmountOwed); 
+;
             if (employee == null)
             {
-                return NotFound();
+                return NotFound(); 
             }
-            return View(employee);
+            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "FirstName", "LastName", "AmountOwed");
+            return View(employee); 
         }
 
         // POST: Employees/Edit/5
@@ -126,8 +140,10 @@ namespace TrashCollecter.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Address,City,State,ZipCode")] Employee employee)
+        public async Task<IActionResult> Edit(int id, Employee employee)
         {
+          
+
             if (id != employee.Id)
             {
                 return NotFound();
@@ -137,8 +153,11 @@ namespace TrashCollecter.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+
+                    _context.Employees.Update(employee); 
                     await _context.SaveChangesAsync();
+                    
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -151,7 +170,7 @@ namespace TrashCollecter.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); 
             }
             return View(employee);
         }
